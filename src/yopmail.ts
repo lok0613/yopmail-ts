@@ -1,8 +1,6 @@
 import * as puppeteer from 'puppeteer';
 import { yopmailUrl, Mail } from './constant';
 
-// const { yopmailUrl } = constant;
-
 const login = async (email: string): Promise<puppeteer.Page> => {
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
@@ -14,9 +12,14 @@ const login = async (email: string): Promise<puppeteer.Page> => {
   return page;
 }
 
-const getLeftFrame = async (page: puppeteer.Page): Promise<puppeteer.Frame | null | undefined> => {
-  const inframeHandle = await page.waitForSelector('iframe#ifinbox');
-  return await inframeHandle?.contentFrame();
+const getLeftFrame = async (page: puppeteer.Page): Promise<puppeteer.Frame> => {
+  const frameHandle = await page.waitForSelector('iframe#ifinbox');
+  const frame = await frameHandle?.contentFrame();
+  if (!frame) {
+    throw new Error("Left frame is not existed.")
+  }
+
+  return frame;
 }
 
 const getMailList = async (page: puppeteer.Page, pageNo: number = 1): Promise<Mail[]> => {
@@ -47,9 +50,23 @@ const getMailList = async (page: puppeteer.Page, pageNo: number = 1): Promise<Ma
   })
 }
 
-const getRightFrame = async (page: puppeteer.Page): Promise<puppeteer.Frame | null | undefined> => {
-  const mailFrameHandle = await page.$('iframe#ifmail');
-  return await mailFrameHandle?.contentFrame();
+const getContent = async (page: puppeteer.Page, id: string): Promise<string> => {
+  const leftFrame = await getLeftFrame(page);
+  const rightFrame = await getRightFrame(page);
+  await leftFrame.click(`div.mctn > div.m[id="${id}"]`)
+  await rightFrame.waitForNavigation();
+
+  return await rightFrame.content();
+};
+
+const getRightFrame = async (page: puppeteer.Page): Promise<puppeteer.Frame> => {
+  const frameHandle = await page.$('iframe#ifmail');
+  const frame = await frameHandle?.contentFrame();
+  if (!frame) {
+    throw new Error("Right frame is not existed.");
+  }
+
+  return frame;
 }
 
 export {
@@ -57,4 +74,5 @@ export {
   getLeftFrame,
   getRightFrame,
   getMailList,
+  getContent,
 }

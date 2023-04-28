@@ -1,11 +1,13 @@
 import { Mail } from "./constant";
-import { getMailList, login } from "./yopmail";
+import { getContent, getMailList, login } from "./yopmail";
 
-const getLastMail = async (email: string): Promise<Mail> => {
+const getLastMail = async (email: string): Promise<string | undefined> => {
   const page = await login(email);
   const mails = await getMailList(page);
+  const lastMail = mails[0];
+  const { id } = lastMail;
 
-  return mails[0];
+  return await getContent(page, id);
 }
 
 export default getLastMail;
