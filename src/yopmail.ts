@@ -1,15 +1,15 @@
 import * as puppeteer from 'puppeteer';
 import { yopmailUrl, Mail } from './constant';
 
-const login = async (email: string): Promise<puppeteer.Page> => {
-  const browser = await puppeteer.launch();
+const login = async (email: string): Promise<[puppeteer.Page, puppeteer.Browser]> => {
+  const browser = await puppeteer.launch({headless: "new"});
   const page = await browser.newPage();
   await page.goto(yopmailUrl);
   await page.type('#login', email);
   await page.click('#refreshbut');
   await page.waitForNavigation();
 
-  return page;
+  return [page, browser];
 }
 
 const getLeftFrame = async (page: puppeteer.Page): Promise<puppeteer.Frame> => {
@@ -53,9 +53,15 @@ const getMailList = async (page: puppeteer.Page, pageNo: number = 1): Promise<Ma
 const getContent = async (page: puppeteer.Page, id: string): Promise<string> => {
   const leftFrame = await getLeftFrame(page);
   const rightFrame = await getRightFrame(page);
-  await leftFrame.click(`div.mctn > div.m[id="${id}"]`)
-  await rightFrame.waitForNavigation();
 
+  const mailSelector = `div.mctn > div.m[id="${id}"]`;
+  const currentId = await leftFrame.$eval("div[currentmail]", (pile: HTMLElement) => pile.getAttribute("id"));
+  console.log("currentmail", currentId);
+  if (id !== currentId) {
+    await leftFrame.click(mailSelector)
+    await rightFrame.waitForNavigation();
+  }
+  
   return await rightFrame.content();
 };
 

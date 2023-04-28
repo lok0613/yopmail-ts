@@ -9,6 +9,9 @@
     "build": "rimraf ./build && tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "bin": {
+    "getLastMail": "build/scripts/getLastMail.js"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
