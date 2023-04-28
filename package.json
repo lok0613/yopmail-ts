@@ -1,8 +1,7 @@
 {
   "name": "yopmail-api",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "version": "1.0.1",
+  "main": "build/index.js",
   "scripts": {
     "start:dev": "npx nodemon",
     "start:prod": "npm run build && node build/index.js",
@@ -25,5 +24,14 @@
   },
   "dependencies": {
     "puppeteer": "^19.11.1"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lok0613/yopmail-ts.git"
+  },
+  "bugs": {
+    "url": "https://github.com/lok0613/yopmail-ts/issues"
+  },
+  "homepage": "https://github.com/lok0613/yopmail-ts#readme",
+  "description": ""
 }

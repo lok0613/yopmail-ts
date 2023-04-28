@@ -1,1 +1,3 @@
-console.log("yes ua")
+import getLastMail from "./getLastMail";
+
+export default getLastMail
