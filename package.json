@@ -1,6 +1,6 @@
 {
   "name": "yopmail-api",
-  "version": "1.0.4",
+  "version": "1.0.6",
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "scripts": {
