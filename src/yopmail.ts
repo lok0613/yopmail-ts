@@ -2,12 +2,17 @@ import * as puppeteer from 'puppeteer';
 import { yopmailUrl, Mail } from './constant';
 
 const login = async (email: string): Promise<[puppeteer.Page, puppeteer.Browser]> => {
-  const browser = await puppeteer.launch({headless: "new"});
+  const browser = await puppeteer.launch();
   const page = await browser.newPage();
   await page.goto(yopmailUrl);
   await page.type('#login', email);
-  await page.click('#refreshbut');
-  await page.waitForNavigation();
+  await page.click('div#refreshbut > button.md');
+  try {
+    await page.waitForNavigation();
+  } catch (e) {
+    // in case it times out
+    await page.screenshot({path: "/tmp/yopamil-timeout.jpg"});
+  }
 
   return [page, browser];
 }
